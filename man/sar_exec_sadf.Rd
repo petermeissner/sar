@@ -5,7 +5,7 @@
 \title{sar_exec_sadf}
 \usage{
 sar_exec_sadf(statistic = c("cpu", "ram", "network", "io", "load"),
-  format = c("df", "csv", "json", "xml"), server = "hsl1")
+  format = c("df", "csv", "json", "xml"), server = NULL)
 }
 \arguments{
 \item{statistic}{Statistics to retreive.}

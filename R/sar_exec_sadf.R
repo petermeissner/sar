@@ -43,14 +43,17 @@ sar_exec_sadf <-
         stringsAsFactors = FALSE
       )
 
-    stat_cmd <-
-      paste(
-        stat_match[
-          match(statistic, stat_match$statistic),
-          "stat_cmd"
-          ],
-        collapse = " "
+    stat_matched <- stat_match[match(statistic, stat_match$statistic), "stat_cmd"]
+
+    if ( any(is.na(stat_matched)) ){
+      stop(
+        "statistic could not be matched: \n\n",
+        paste(statistic, collapse = ", "), " -->\n\n",
+        paste(capture.output(print(stat_match)), collapse = "\n")
       )
+    }
+
+    stat_cmd <- paste(stat_matched,collapse = " ")
 
     # format to commandline option
     format_match <-
@@ -97,7 +100,7 @@ sar_exec_sadf <-
         }
       )
 
+    # return
     paste(res, collapse = "\n")
-
   }
 
