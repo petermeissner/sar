@@ -1,18 +1,27 @@
 #' sar_stat
 #'
-#' @param statistic list of categories to report statistics on
 #' @param as format to return
-#' @param server optional server to get statistics from - if set, function
-#'   will try to ssh into server and retrieve statitics otherwise it will
-#'   retrieve statistics from local machine
+#' @inheritParams sar_exec_sadf
+#'
+#' @rdname sar_exec_sadf
 #'
 #' @export
+#'
+#' @examples
+#'
+#' \dontrun{
+#'  sar_stat()
+#'  sar_stat(as = "json")
+#'  sar_stat(server = "localhost")
+#' }
 #'
 sar_stat <-
   function(
     statistic = c("cpu", "ram", "network", "io", "load"),
     as        = c("df", "json", "xml"),
-    server    = NULL
+    server    = NULL,
+    day       = NULL,
+    log_path  = NULL
   ){
 
     # process inputs
@@ -25,7 +34,9 @@ sar_stat <-
         sar_exec_sadf(
           format    = "xml",
           statistic = statistic,
-          server    = server
+          server    = server,
+          day       = day,
+          log_path  = log_path
         )
       )
     } else {
@@ -33,7 +44,9 @@ sar_stat <-
         sar_exec_sadf(
           format    = "json",
           statistic = statistic,
-          server    = server
+          server    = server,
+          day       = day,
+          log_path  = log_path
         )
 
       if( as == "json" ){
@@ -53,7 +66,8 @@ sar_stat <-
     # put data into data.frame
     df <- sar_normalize_json(json_parsed)
 
-    # return
+    # add sar_df class and return
+    class(df) <- c(class(df), "sar_df")
     df
   }
 

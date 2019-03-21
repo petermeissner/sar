@@ -1,14 +1,10 @@
 #' sar_normalize_dat
 #'
 #' @param dat single data item from parsed json
-#' @param ts timestamp
-#' @param tspan timespan
 #' @param node node name
 #'
-#' @return
 #' @export
 #'
-#' @examples
 sar_normalize_dat <-
   function(dat, node){
 
@@ -114,8 +110,8 @@ sar_normalize_dat <-
 
     # combine data
     df      <- rbind(io, ram, cpu, load, net)
-    df$unit <- stringr::str_extract(df$stat, "[a-z]+$")
-    df$name <- stringr::str_replace(df$stat, "(^[a-z]+_)(.*?)(_[0-9a-z]+$)", "\\2")
+    df$unit <- stringb::text_extract(df$stat, "[a-z]+$")
+    df$name <- stringb::text_replace(df$stat, "(^[a-z]+_)(.*?)(_[0-9a-z]+$)", "\\2")
     rownames(df) <- NULL
 
     df

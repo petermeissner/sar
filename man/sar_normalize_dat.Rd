@@ -10,10 +10,6 @@ sar_normalize_dat(dat, node)
 \item{dat}{single data item from parsed json}
 
 \item{node}{node name}
-
-\item{ts}{timestamp}
-
-\item{tspan}{timespan}
 }
 \description{
 sar_normalize_dat

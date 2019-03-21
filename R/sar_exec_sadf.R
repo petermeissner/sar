@@ -2,7 +2,11 @@
 #'
 #' @param statistic Statistics to retreive.
 #' @param format Only first item will be used. The format of data to produce.
-#' @param server list of servers to ssh into and retrieve statistics
+#' @param server optional server to get statistics from - if set, function
+#'   will try to ssh into server and retrieve statitics otherwise it will
+#'   retrieve statistics from local machine
+#' @param day optional; either a positive number indicating the calender day or a negative number indicating the number of days before today
+#' @param log_path optional; a path to look for dat files
 #'
 #' @export
 #'
@@ -17,23 +21,43 @@ sar_exec_sadf <-
   function(
     statistic = c("cpu", "ram", "network", "io", "load"),
     format    = c("df", "csv", "json", "xml"),
-    server    = NULL
+    server    = NULL,
+    day       = NULL,
+    log_path  = NULL
   ){
-
-    # # log path
-    # if ( is.null(log_path) ){
-    #   log_path <- "/var/log/sysstat/"
-    # } else {
-    #   # do nothing
-    # }
 
     # server
     server_cmd   <-
       if ( length(server) > 0 ){
-        glue::glue("ssh {server}")
+        glue::glue("ssh {server} ")
       } else {
         ""
       }
+
+    # log path
+    if ( !is.null(day) ){
+      if ( day > 0  ){
+        if ( is.null(log_path) ){
+          if ( system(glue::glue("{server_cmd}ls /var/log/sysstat/"), wait = TRUE, ignore.stdout = TRUE) == 0 ) {
+            log_path <- "/var/log/sysstat/"
+          } else if ( system(glue::glue("{server_cmd}ls /var/log/sa"), wait = TRUE, ignore.stdout = TRUE) == 0 ) {
+            log_path <- "/var/log/sa"
+          } else {
+            stop("I do not know which path to use.")
+          }
+        } else {
+          # do nothing
+        }
+        day      <- substring(paste0("0", day), nchar(day), nchar(day)+1)
+        path_cmd <- glue::glue("{log_path}/sa{day}")
+      } else {
+        path_cmd <- glue::glue("{day}")
+      }
+
+    } else {
+      path_cmd <- ""
+    }
+
 
     # statistic to commandline option
     stat_match <-
@@ -49,7 +73,7 @@ sar_exec_sadf <-
       stop(
         "statistic could not be matched: \n\n",
         paste(statistic, collapse = ", "), " -->\n\n",
-        paste(capture.output(print(stat_match)), collapse = "\n")
+        paste(utils::capture.output(print(stat_match)), collapse = "\n")
       )
     }
 
@@ -77,7 +101,7 @@ sar_exec_sadf <-
       glue::glue(
         "bash -c ",
         "'",
-        "{server_cmd} sadf -h{format_cmd} -- {stat_cmd}",
+        "{server_cmd}sadf -h{format_cmd} -- {stat_cmd} {path_cmd}",
         "'"
       )
 
