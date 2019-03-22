@@ -11,7 +11,7 @@ sar_exec_sadf(statistic = c("cpu", "ram", "network", "io", "load"),
 
 sar_stat(statistic = c("cpu", "ram", "network", "io", "load"),
   as = c("df", "json", "xml"), server = NULL, day = NULL,
-  log_path = NULL)
+  log_path = NULL, to_wide = FALSE)
 }
 \arguments{
 \item{statistic}{Statistics to retreive.}

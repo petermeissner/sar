@@ -28,14 +28,14 @@ sar_exec_sadf <-
 
     # server
     server_cmd   <-
-      if ( length(server) > 0 ){
+      if ( length(server) > 0 & !all(is.na(server)) ){
         glue::glue("ssh {server} ")
       } else {
         ""
       }
 
     # log path
-    if ( !is.null(day) ){
+    if ( !is.null(day)  & !all(is.na(day)) ){
       if ( day > 0  ){
         if ( is.null(log_path) ){
           if ( system(glue::glue("{server_cmd}ls /var/log/sysstat/"), wait = TRUE, ignore.stdout = TRUE) == 0 ) {

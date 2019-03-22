@@ -2,7 +2,6 @@
 #'
 #' @param json_parsed json parsed to list via jsonlite::fromJSON()
 #'
-#' @export
 #'
 sar_normalize_json <-
   function(json_parsed){
