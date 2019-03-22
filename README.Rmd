@@ -7,7 +7,7 @@ output: github_document
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
+  comment = "##",
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
@@ -17,8 +17,12 @@ knitr::opts_chunk$set(
 
 
 ```{r, include=FALSE}
+
 options("width"=110)
+options(max.print=100)
+
 tmp <- packageDescription( basename(getwd()) )
+
 ```
 
 
@@ -136,13 +140,83 @@ library(sar)
 library(sar)
 ```
 
-```{r, eval=FALSE}
+```{r, include=FALSE}
+sar_stat <- 
+  function(...){
+    tmp      <- sar::sar_stat(...)
+    tmp$node <- "Server1"
+    tmp
+  }
+```
+
+**simple usage**
+
+```{r}
 sar_stat() %>% head()
 ```
 
-```{r, echo=FALSE}
-d <- sar_stat() %>% head()
-d$node <- "my_server_#1"
-d
+**simple usage to wide format**
+
+```{r}
+sar_stat(to_wide = TRUE) %>% head()
 ```
+
+
+
+**get data for yesterday**
+
+```{r}
+sar_stat(day = -1) %>% head()
+```
+
+
+**get data for day before yesterday**
+
+```{r}
+sar_stat(day = -2) %>% head()
+```
+
+
+**get data for last 20th calender day**
+
+```{r}
+sar_stat(day = 20) %>% head()
+```
+
+**get data for remote server**
+
+```{r}
+sar_stat(server = c("localhost", "localhost")) %>% head()
+```
+
+
+**and now vectorized on server and day**
+
+
+```{r}
+sar_stat(day = -c(1:5), server = c("localhost", "localhost")) %>% head()
+```
+
+
+
+**but best of all is plotting**
+
+```{r}
+# TBD #  sar_stat() %>% plot()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
